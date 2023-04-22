@@ -40,6 +40,7 @@ type FeatureFlags struct {
 	DisableDeletionProtection        DisableDeletionProtection `yaml:"disable-deletion-protection"`
 	DisableEC2InstanceStopProtection bool                      `yaml:"disable-ec2-instance-stop-protection"`
 	ForceDeleteLightsailAddOns       bool                      `yaml:"force-delete-lightsail-addons"`
+	DeleteAccountsWithoutAlias bool                      `yaml:"delete-accounts-without-alias"`
 }
 
 type DisableDeletionProtection struct {
@@ -103,7 +104,7 @@ func (c *Nuke) ResolveBlocklist() []string {
 }
 
 func (c *Nuke) HasBlocklist() bool {
-	var blocklist = c.ResolveBlocklist()
+	blocklist := c.ResolveBlocklist()
 	return blocklist != nil && len(blocklist) > 0
 }
 
@@ -129,16 +130,18 @@ func (c *Nuke) ValidateAccount(accountID string, aliases []string) error {
 			"but it is blocklisted. Aborting.", accountID)
 	}
 
-	if len(aliases) == 0 {
-		return fmt.Errorf("The specified account doesn't have an alias. " +
-			"For safety reasons you need to specify an account alias. " +
-			"Your production account should contain the term 'prod'.")
-	}
+	if !c.FeatureFlags.DeleteAccountsWithoutAlias {
+		if len(aliases) == 0 {
+			return fmt.Errorf("The specified account doesn't have an alias. " +
+				"For safety reasons you need to specify an account alias. " +
+				"Your production account should contain the term 'prod'.")
+		}
 
-	for _, alias := range aliases {
-		if strings.Contains(strings.ToLower(alias), "prod") {
-			return fmt.Errorf("You are trying to nuke an account with the alias '%s', "+
-				"but it has the substring 'prod' in it. Aborting.", alias)
+		for _, alias := range aliases {
+			if strings.Contains(strings.ToLower(alias), "prod") {
+				return fmt.Errorf("You are trying to nuke an account with the alias '%s', "+
+					"but it has the substring 'prod' in it. Aborting.", alias)
+			}
 		}
 	}
 

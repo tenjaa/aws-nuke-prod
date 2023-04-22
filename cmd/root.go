@@ -80,7 +80,7 @@ func NewRootCommand() *cobra.Command {
 			}
 		}
 
-		account, err := awsutil.NewAccount(creds, config.CustomEndpoints)
+		account, err := awsutil.NewAccount(creds, config.CustomEndpoints, !config.FeatureFlags.DeleteAccountsWithoutAlias)
 		if err != nil {
 			return err
 		}
