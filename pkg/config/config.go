@@ -40,7 +40,7 @@ type FeatureFlags struct {
 	DisableDeletionProtection        DisableDeletionProtection `yaml:"disable-deletion-protection"`
 	DisableEC2InstanceStopProtection bool                      `yaml:"disable-ec2-instance-stop-protection"`
 	ForceDeleteLightsailAddOns       bool                      `yaml:"force-delete-lightsail-addons"`
-	DeleteAccountsWithoutAlias bool                      `yaml:"delete-accounts-without-alias"`
+	DeleteAccountsWithoutAlias       bool                      `yaml:"delete-accounts-without-alias"`
 }
 
 type DisableDeletionProtection struct {
