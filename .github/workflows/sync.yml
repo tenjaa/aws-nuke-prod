@@ -16,6 +16,8 @@ jobs:
       with:
         fetch-depth: 0
     - run: |
+        git config user.email "automated@example.com"
+        git config user.name "Update automation"
         git remote add upstream https://github.com/rebuy-de/aws-nuke.git 
         git fetch upstream
         git rebase upstream/main
